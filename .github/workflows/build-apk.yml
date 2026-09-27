@@ -9,6 +9,7 @@ on:
       - v21source/**
       - v22patch/**
       - v30patch/**
+      - v301patch/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -59,12 +60,18 @@ jobs:
           sed -i 's/PrivacyOptionsRequirementStatus.REQUIRED/ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED/' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
           grep -q "android.useAndroidX=true" yak_alimi_v21_work/gradle.properties
           grep -q "ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
-          grep -q "versionCode 30" yak_alimi_v21_work/app/build.gradle
-          grep -q "versionName '3.0.0'" yak_alimi_v21_work/app/build.gradle
           grep -q "play-services-ads:25.5.0" yak_alimi_v21_work/app/build.gradle
           grep -q "billing:9.1.0" yak_alimi_v21_work/app/build.gradle
-          test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
-          test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
+
+      - name: Apply v3.0.1 patch
+        shell: bash
+        run: |
+          python v301patch/apply_v301.py
+          grep -q "versionCode 31" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '3.0.1'" yak_alimi_v21_work/app/build.gradle
+          grep -q "사용자 기기에만 저장되며" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
+          grep -q "shouldShowFullScreenHint" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AppMigration.java
+          grep -q 'pivotX="69"' yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_foreground.xml
 
       - name: Check Android SDK
         shell: bash
@@ -83,17 +90,17 @@ jobs:
         run: |
           APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           test -n "$APK"
-          cp "$APK" yak-alimi-v3.0-unsigned.apk
+          cp "$APK" yak-alimi-v3.0.1-unsigned.apk
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.1-unsigned.apk >/dev/null
 
       - name: Upload unsigned APK and signer
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0-signing-inputs
+          name: yak-alimi-v3.0.1-signing-inputs
           path: |
-            yak-alimi-v3.0-unsigned.apk
+            yak-alimi-v3.0.1-unsigned.apk
             apksigner.jar
           if-no-files-found: error
