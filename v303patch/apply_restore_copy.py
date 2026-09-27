@@ -35,4 +35,8 @@ main.write_text(s, encoding='utf-8')
 release_patch = Path(__file__).with_name('apply_release_links.py')
 exec(compile(release_patch.read_text(encoding='utf-8'), str(release_patch), 'exec'), {'__name__':'__main__'})
 
-print('V3.0.3 purchase-restore copy patch applied')
+# Match the launcher name to the user's device language.
+name_patch = Path(__file__).with_name('apply_localized_app_names.py')
+exec(compile(name_patch.read_text(encoding='utf-8'), str(name_patch), 'exec'), {'__name__':'__main__'})
+
+print('V3.0.3 purchase-restore, release-link, and localized-name patches applied')
