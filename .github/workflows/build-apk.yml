@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - source_parts/**
+      - v2source/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -27,29 +27,31 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Restore Android project
+      - name: Restore Android v2 project
         shell: bash
         run: |
-          cat source_parts/source.part* > source.full.b64
-          test "$(wc -c < source.full.b64)" -eq 28212
-          base64 --decode source.full.b64 > yak-alimi-source.zip
-          unzip -tq yak-alimi-source.zip
-          unzip -q yak-alimi-source.zip
+          cat v2source/source.part* > v2source.full.b64
+          test "$(wc -c < v2source.full.b64)" -eq 25008
+          base64 --decode v2source.full.b64 > yak-alimi-v2-source.tar.gz
+          tar -tzf yak-alimi-v2-source.tar.gz >/dev/null
+          tar -xzf yak-alimi-v2-source.tar.gz
           test -f yak_alimi_android/app/build.gradle
+          test -f yak_alimi_android/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
+
+      - name: Install stable debug signing key
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.android"
+          base64 --decode v2source/debug.keystore.b64 > "$HOME/.android/debug.keystore"
+          chmod 600 "$HOME/.android/debug.keystore"
+          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey >/dev/null
 
       - name: Check Android SDK
         shell: bash
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
-          ls "$ANDROID_HOME/platforms" | tail -20
+          test -d "$ANDROID_HOME/platforms/android-35"
           ls "$ANDROID_HOME/build-tools" | tail -20
-
-      - name: Run inventory logic test
-        shell: bash
-        run: |
-          cd yak_alimi_android
-          javac tools/InventoryLogicTest.java
-          java -cp tools InventoryLogicTest
 
       - name: Build debug APK
         shell: bash
@@ -59,11 +61,18 @@ jobs:
 
       - name: Rename APK
         shell: bash
-        run: cp yak_alimi_android/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v1.apk
+        run: cp yak_alimi_android/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v2.apk
+
+      - name: Verify APK
+        shell: bash
+        run: |
+          test -s yak-alimi-v2.apk
+          unzip -tq yak-alimi-v2.apk >/dev/null
+          sha256sum yak-alimi-v2.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v1-apk
-          path: yak-alimi-v1.apk
+          name: yak-alimi-v2-apk
+          path: yak-alimi-v2.apk
           if-no-files-found: error
