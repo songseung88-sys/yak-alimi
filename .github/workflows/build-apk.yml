@@ -63,19 +63,22 @@ jobs:
           cd yak_alimi_v21_work
           gradle :app:assembleRelease --stacktrace
 
-      - name: Collect unsigned APK
+      - name: Collect unsigned APK and apksigner
         shell: bash
         run: |
-          find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' -print
           APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           test -n "$APK"
           cp "$APK" yak-alimi-v2.2.1-unsigned.apk
+          SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
+          test -n "$SIGNER"
+          cp "$SIGNER" apksigner.jar
           unzip -tq yak-alimi-v2.2.1-unsigned.apk >/dev/null
-          sha256sum yak-alimi-v2.2.1-unsigned.apk
 
-      - name: Upload unsigned APK artifact
+      - name: Upload unsigned APK and signer
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v2.2.1-unsigned-apk
-          path: yak-alimi-v2.2.1-unsigned.apk
+          name: yak-alimi-v2.2.1-signing-inputs
+          path: |
+            yak-alimi-v2.2.1-unsigned.apk
+            apksigner.jar
           if-no-files-found: error
