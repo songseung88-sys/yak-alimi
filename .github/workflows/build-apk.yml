@@ -39,16 +39,53 @@ jobs:
           tar -xzf yak-alimi-v2.1-source.tar.gz
           test -f yak_alimi_v21_work/app/build.gradle
 
-      - name: Apply v2.2.1 update and migration patch
+      - name: Apply v2.2.2 update and migration patch
         shell: bash
         run: |
           python v22patch/apply_v22.py
-          sed -i 's/versionCode 22/versionCode 23/' yak_alimi_v21_work/app/build.gradle
-          sed -i "s/versionName '2.2.0'/versionName '2.2.1'/" yak_alimi_v21_work/app/build.gradle
-          grep -q "versionCode 23" yak_alimi_v21_work/app/build.gradle
-          grep -q "versionName '2.2.1'" yak_alimi_v21_work/app/build.gradle
+          sed -i 's/versionCode 22/versionCode 24/' yak_alimi_v21_work/app/build.gradle
+          sed -i "s/versionName '2.2.0'/versionName '2.2.2'/" yak_alimi_v21_work/app/build.gradle
+
+          cat > yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_foreground.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#FFFFFF" android:pathData="M22,52 C18.5,48.5 18.5,43 22,39.5 C25.5,36 31,36 34.5,39.5 L47.5,52.5 L72.5,27.5 C76,24 81.5,24 85,27.5 C88.5,31 88.5,36.5 85,40 L55,70 C51.5,73.5 46,73.5 42.5,70 Z"/>
+              <path android:fillColor="#FFFFFF" android:pathData="M61,82 L82,61 C86,57 92,57 96,61 C100,65 100,71 96,75 L75,96 C71,100 65,100 61,96 C57,92 57,86 61,82 Z"/>
+              <path android:fillColor="#44E5C4" android:pathData="M78.5,64.5 L82,61 C86,57 92,57 96,61 C100,65 100,71 96,75 L86.5,84.5 Z"/>
+              <path android:strokeColor="#008EA3" android:strokeWidth="2.8" android:strokeLineCap="round" android:pathData="M77.5,73.5 L86.5,82.5"/>
+              <path android:strokeColor="#FFFFFF" android:strokeWidth="2.6" android:strokeLineCap="round" android:pathData="M88,63 C91,63.5 94,66 94.5,69"/>
+          </vector>
+          EOF
+
+          cat > yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#08AFC2" android:pathData="M19,5 H89 C98,5 103,10 103,19 V89 C103,98 98,103 89,103 H19 C10,103 5,98 5,89 V19 C5,10 10,5 19,5 Z"/>
+              <path android:fillColor="#39DFC0" android:pathData="M5,19 C5,10 10,5 19,5 H75 C56,22 39,33 5,43 Z"/>
+              <path android:fillColor="#00C8D7" android:pathData="M5,73 C28,77 42,91 67,99 C82,103 95,97 103,88 V89 C103,98 98,103 89,103 H19 C10,103 5,98 5,89 Z"/>
+              <path android:fillColor="#FFFFFF" android:pathData="M22,52 C18.5,48.5 18.5,43 22,39.5 C25.5,36 31,36 34.5,39.5 L47.5,52.5 L72.5,27.5 C76,24 81.5,24 85,27.5 C88.5,31 88.5,36.5 85,40 L55,70 C51.5,73.5 46,73.5 42.5,70 Z"/>
+              <path android:fillColor="#FFFFFF" android:pathData="M61,82 L82,61 C86,57 92,57 96,61 C100,65 100,71 96,75 L75,96 C71,100 65,100 61,96 C57,92 57,86 61,82 Z"/>
+              <path android:fillColor="#44E5C4" android:pathData="M78.5,64.5 L82,61 C86,57 92,57 96,61 C100,65 100,71 96,75 L86.5,84.5 Z"/>
+              <path android:strokeColor="#008EA3" android:strokeWidth="2.8" android:strokeLineCap="round" android:pathData="M77.5,73.5 L86.5,82.5"/>
+              <path android:strokeColor="#FFFFFF" android:strokeWidth="2.6" android:strokeLineCap="round" android:pathData="M88,63 C91,63.5 94,66 94.5,69"/>
+          </vector>
+          EOF
+
+          cat > yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_monochrome.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#FFFFFFFF" android:pathData="M22,52 C18.5,48.5 18.5,43 22,39.5 C25.5,36 31,36 34.5,39.5 L47.5,52.5 L72.5,27.5 C76,24 81.5,24 85,27.5 C88.5,31 88.5,36.5 85,40 L55,70 C51.5,73.5 46,73.5 42.5,70 Z"/>
+              <path android:fillColor="#FFFFFFFF" android:pathData="M61,82 L82,61 C86,57 92,57 96,61 C100,65 100,71 96,75 L75,96 C71,100 65,100 61,96 C57,92 57,86 61,82 Z"/>
+          </vector>
+          EOF
+
+          grep -q "versionCode 24" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '2.2.2'" yak_alimi_v21_work/app/build.gradle
+          grep -q "44E5C4" yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_foreground.xml
           test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AppMigration.java
-          test -f yak_alimi_v21_work/app/src/main/res/drawable-anydpi-v33/ic_launcher.xml
 
       - name: Check Android SDK
         shell: bash
@@ -68,17 +105,17 @@ jobs:
         run: |
           APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           test -n "$APK"
-          cp "$APK" yak-alimi-v2.2.1-unsigned.apk
+          cp "$APK" yak-alimi-v2.2.2-unsigned.apk
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v2.2.1-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v2.2.2-unsigned.apk >/dev/null
 
       - name: Upload unsigned APK and signer
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v2.2.1-signing-inputs
+          name: yak-alimi-v2.2.2-signing-inputs
           path: |
-            yak-alimi-v2.2.1-unsigned.apk
+            yak-alimi-v2.2.2-unsigned.apk
             apksigner.jar
           if-no-files-found: error
