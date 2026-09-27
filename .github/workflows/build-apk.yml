@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - source.b64
+      - source_parts/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -30,7 +30,10 @@ jobs:
       - name: Restore Android project
         shell: bash
         run: |
-          base64 --decode source.b64 > yak-alimi-source.zip
+          cat source_parts/source.part* > source.full.b64
+          test "$(wc -c < source.full.b64)" -eq 28212
+          base64 --decode source.full.b64 > yak-alimi-source.zip
+          unzip -tq yak-alimi-source.zip
           unzip -q yak-alimi-source.zip
           test -f yak_alimi_android/app/build.gradle
 
