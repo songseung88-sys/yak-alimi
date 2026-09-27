@@ -30,7 +30,10 @@ jobs:
       - name: Restore Android v2 project
         shell: bash
         run: |
-          cat v2source/source.part* > v2source.full.b64
+          head -c -1 v2source/source.part00 > v2source.full.b64
+          printf 's' >> v2source.full.b64
+          tail -c 1 v2source/source.part00 >> v2source.full.b64
+          cat v2source/source.part01 v2source/source.part02 v2source/source.part03 v2source/source.part04 >> v2source.full.b64
           test "$(wc -c < v2source.full.b64)" -eq 25008
           base64 --decode v2source.full.b64 > yak-alimi-v2-source.tar.gz
           tar -tzf yak-alimi-v2-source.tar.gz >/dev/null
