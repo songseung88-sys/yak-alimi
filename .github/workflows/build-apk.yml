@@ -10,6 +10,7 @@ on:
       - v22patch/**
       - v30patch/**
       - v301patch/**
+      - v302patch/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -73,6 +74,15 @@ jobs:
           grep -q "shouldShowFullScreenHint" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AppMigration.java
           grep -q 'pivotX="69"' yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_foreground.xml
 
+      - name: Apply v3.0.2 patch
+        shell: bash
+        run: |
+          python v302patch/apply_v302.py
+          grep -q "versionCode 32" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '3.0.2'" yak_alimi_v21_work/app/build.gradle
+          grep -q "업데이트로 인해 전체화면 알림 권한이 해제되었습니다" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
+          grep -q "fullScreenNeedsPermission" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+
       - name: Check Android SDK
         shell: bash
         run: |
@@ -90,17 +100,17 @@ jobs:
         run: |
           APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           test -n "$APK"
-          cp "$APK" yak-alimi-v3.0.1-unsigned.apk
+          cp "$APK" yak-alimi-v3.0.2-unsigned.apk
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.1-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.2-unsigned.apk >/dev/null
 
       - name: Upload unsigned APK and signer
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.1-signing-inputs
+          name: yak-alimi-v3.0.2-signing-inputs
           path: |
-            yak-alimi-v3.0.1-unsigned.apk
+            yak-alimi-v3.0.2-unsigned.apk
             apksigner.jar
           if-no-files-found: error
