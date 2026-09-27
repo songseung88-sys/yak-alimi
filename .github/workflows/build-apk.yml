@@ -3,17 +3,15 @@ name: Build Yak Alimi APK
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
     paths:
-      - 'source.b64'
-      - '.github/workflows/build-apk.yml'
+      - source.b64
+      - .github/workflows/build-apk.yml
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,43 +22,40 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Locate sdkmanager
-        run: |
-          SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -path '*/bin/sdkmanager' | head -n 1)"
-          echo "Found sdkmanager: $SDKMANAGER"
-          test -n "$SDKMANAGER"
-          test -x "$SDKMANAGER"
-          echo "SDKMANAGER=$SDKMANAGER" >> "$GITHUB_ENV"
-
-      - name: Accept Android SDK licenses
-        run: yes | "$SDKMANAGER" --licenses >/dev/null || true
-
-      - name: Install Android SDK packages
-        run: "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
       - name: Set up Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
       - name: Restore Android project
+        shell: bash
         run: |
           base64 --decode source.b64 > yak-alimi-source.zip
           unzip -q yak-alimi-source.zip
           test -f yak_alimi_android/app/build.gradle
 
+      - name: Check Android SDK
+        shell: bash
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME/platforms" | tail -20
+          ls "$ANDROID_HOME/build-tools" | tail -20
+
       - name: Run inventory logic test
+        shell: bash
         run: |
           cd yak_alimi_android
           javac tools/InventoryLogicTest.java
           java -cp tools InventoryLogicTest
 
       - name: Build debug APK
+        shell: bash
         run: |
           cd yak_alimi_android
           gradle :app:assembleDebug --stacktrace
 
       - name: Rename APK
+        shell: bash
         run: cp yak_alimi_android/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v1.apk
 
       - name: Upload APK artifact
