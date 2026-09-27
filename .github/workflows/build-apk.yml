@@ -84,11 +84,14 @@ jobs:
         shell: bash
         run: |
           python v303patch/apply_v303.py
+          python v303patch/apply_restore_copy.py
           grep -q "versionCode 33" yak_alimi_v21_work/app/build.gradle
           grep -q "versionName '3.0.3'" yak_alimi_v21_work/app/build.gradle
           grep -q "premium_price_line" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
           grep -q "getPremiumFormattedPrice" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
           grep -q "premium_helper" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+          grep -q "이전 구매 복구" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
+          grep -q "restore_purchase_desc" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
 
       - name: Check Android SDK
         shell: bash
