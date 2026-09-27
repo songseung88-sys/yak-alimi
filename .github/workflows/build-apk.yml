@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - v2source/**
+      - v21source/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -27,19 +27,19 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Restore Android v2 project
+      - name: Restore Android v2.1 project
         shell: bash
         run: |
-          head -c -1 v2source/source.part00 > v2source.full.b64
-          printf 's' >> v2source.full.b64
-          tail -c 1 v2source/source.part00 >> v2source.full.b64
-          cat v2source/source.part01 v2source/source.part02 v2source/source.part03 v2source/source.part04 >> v2source.full.b64
-          test "$(wc -c < v2source.full.b64)" -eq 25008
-          base64 --decode v2source.full.b64 > yak-alimi-v2-source.tar.gz
-          tar -tzf yak-alimi-v2-source.tar.gz >/dev/null
-          tar -xzf yak-alimi-v2-source.tar.gz
-          test -f yak_alimi_android/app/build.gradle
-          test -f yak_alimi_android/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
+          cat v21source/part* > v21source.full.b64
+          test "$(wc -c < v21source.full.b64)" -eq 37292
+          base64 --decode v21source.full.b64 > yak-alimi-v2.1-source.tar.gz
+          echo "de77571b93186083e4356b91ddba829df6cd904921124fe2dc5eb58ea7a877c7  yak-alimi-v2.1-source.tar.gz" | sha256sum -c -
+          tar -tzf yak-alimi-v2.1-source.tar.gz >/dev/null
+          tar -xzf yak-alimi-v2.1-source.tar.gz
+          test -f yak_alimi_v21_work/app/build.gradle
+          test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
+          grep -q "versionCode 3" yak_alimi_v21_work/app/build.gradle
+          grep -q 'alertMode = "vibrate"' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/Medicine.java
 
       - name: Install stable debug signing key
         shell: bash
@@ -59,23 +59,23 @@ jobs:
       - name: Build debug APK
         shell: bash
         run: |
-          cd yak_alimi_android
+          cd yak_alimi_v21_work
           gradle :app:assembleDebug --stacktrace
 
       - name: Rename APK
         shell: bash
-        run: cp yak_alimi_android/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v2.apk
+        run: cp yak_alimi_v21_work/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v2.1.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s yak-alimi-v2.apk
-          unzip -tq yak-alimi-v2.apk >/dev/null
-          sha256sum yak-alimi-v2.apk
+          test -s yak-alimi-v2.1.apk
+          unzip -tq yak-alimi-v2.1.apk >/dev/null
+          sha256sum yak-alimi-v2.1.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v2-apk
-          path: yak-alimi-v2.apk
+          name: yak-alimi-v2.1-apk
+          path: yak-alimi-v2.1.apk
           if-no-files-found: error
