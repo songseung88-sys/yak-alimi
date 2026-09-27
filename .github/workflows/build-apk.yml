@@ -1,4 +1,4 @@
-name: Build Yak Alimi APK
+name: Build Yak Alimi Android Release
 
 on:
   workflow_dispatch:
@@ -11,6 +11,7 @@ on:
       - v30patch/**
       - v301patch/**
       - v302patch/**
+      - playstore/**
       - .github/workflows/build-apk.yml
 
 jobs:
@@ -89,28 +90,33 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME"
           test -d "$ANDROID_HOME/platforms/android-35"
 
-      - name: Build unsigned release APK
+      - name: Build unsigned APK and AAB
         shell: bash
         run: |
           cd yak_alimi_v21_work
-          gradle :app:assembleRelease --stacktrace
+          gradle :app:assembleRelease :app:bundleRelease --stacktrace
 
-      - name: Collect unsigned APK and apksigner
+      - name: Collect release artifacts and apksigner
         shell: bash
         run: |
           APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
+          AAB=$(find yak_alimi_v21_work/app/build/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' | head -1)
           test -n "$APK"
+          test -n "$AAB"
           cp "$APK" yak-alimi-v3.0.2-unsigned.apk
+          cp "$AAB" yak-alimi-v3.0.2-unsigned.aab
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
           unzip -tq yak-alimi-v3.0.2-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.2-unsigned.aab >/dev/null
 
-      - name: Upload unsigned APK and signer
+      - name: Upload Play Store preparation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.2-signing-inputs
+          name: yak-alimi-v3.0.2-playstore-inputs
           path: |
             yak-alimi-v3.0.2-unsigned.apk
+            yak-alimi-v3.0.2-unsigned.aab
             apksigner.jar
           if-no-files-found: error
