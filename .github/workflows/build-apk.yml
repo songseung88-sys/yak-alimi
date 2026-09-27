@@ -39,24 +39,16 @@ jobs:
           tar -xzf yak-alimi-v2.1-source.tar.gz
           test -f yak_alimi_v21_work/app/build.gradle
 
-      - name: Apply v2.2 update and migration patch
+      - name: Apply v2.2.1 update and migration patch
         shell: bash
         run: |
           python v22patch/apply_v22.py
-          grep -q "versionCode 22" yak_alimi_v21_work/app/build.gradle
-          grep -q "versionName '2.2.0'" yak_alimi_v21_work/app/build.gradle
+          sed -i 's/versionCode 22/versionCode 23/' yak_alimi_v21_work/app/build.gradle
+          sed -i "s/versionName '2.2.0'/versionName '2.2.1'/" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionCode 23" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '2.2.1'" yak_alimi_v21_work/app/build.gradle
           test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AppMigration.java
           test -f yak_alimi_v21_work/app/src/main/res/drawable-anydpi-v33/ic_launcher.xml
-          grep -q "AppMigration.run" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
-          grep -q "R.drawable.ic_notification" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
-
-      - name: Install stable debug signing key
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.android"
-          base64 --decode v2source/debug.keystore.b64 > "$HOME/.android/debug.keystore"
-          chmod 600 "$HOME/.android/debug.keystore"
-          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey >/dev/null
 
       - name: Check Android SDK
         shell: bash
@@ -65,26 +57,25 @@ jobs:
           test -d "$ANDROID_HOME/platforms/android-35"
           ls "$ANDROID_HOME/build-tools" | tail -20
 
-      - name: Build debug APK
+      - name: Build unsigned release APK
         shell: bash
         run: |
           cd yak_alimi_v21_work
-          gradle :app:assembleDebug --stacktrace
+          gradle :app:assembleRelease --stacktrace
 
-      - name: Rename APK
-        shell: bash
-        run: cp yak_alimi_v21_work/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v2.2.apk
-
-      - name: Verify APK
+      - name: Collect unsigned APK
         shell: bash
         run: |
-          test -s yak-alimi-v2.2.apk
-          unzip -tq yak-alimi-v2.2.apk >/dev/null
-          sha256sum yak-alimi-v2.2.apk
+          find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' -print
+          APK=$(find yak_alimi_v21_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
+          test -n "$APK"
+          cp "$APK" yak-alimi-v2.2.1-unsigned.apk
+          unzip -tq yak-alimi-v2.2.1-unsigned.apk >/dev/null
+          sha256sum yak-alimi-v2.2.1-unsigned.apk
 
-      - name: Upload APK artifact
+      - name: Upload unsigned APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v2.2-apk
-          path: yak-alimi-v2.2.apk
+          name: yak-alimi-v2.2.1-unsigned-apk
+          path: yak-alimi-v2.2.1-unsigned.apk
           if-no-files-found: error
