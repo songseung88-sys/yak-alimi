@@ -17,8 +17,13 @@
 혜택 3: 모든 기능 사용
 가격 줄: {PRICE} · 한 번만 결제
 구매 버튼: 프리미엄 구매
-복원 버튼: 구매 복원
+복구 안내: 이전에 구매했나요?
+복구 버튼: 이전 구매 복구
 보조 문구: 한 번 구매하면 계속 사용할 수 있습니다.
+
+### 설정 > 프리미엄
+버튼: 이전 구매 복구
+설명: 이전에 구매한 프리미엄을 다시 활성화합니다.
 
 ### 무료 제한 안내
 제목: 프리미엄이 필요합니다
@@ -28,7 +33,7 @@
 
 ### 구매 상태
 프리미엄 사용 중
-구매가 복원되었습니다.
+이전 구매를 확인해 프리미엄을 다시 활성화했습니다.
 구매 정보를 확인할 수 없습니다. 잠시 후 다시 시도해주세요.
 
 ---
@@ -42,8 +47,13 @@ Benefit 2: Add multiple medications
 Benefit 3: Access all features
 Price line: {PRICE} · One-time purchase
 Purchase button: Unlock Premium
-Restore button: Restore Purchase
+Recovery prompt: Purchased before?
+Recovery button: Restore Purchase
 Helper: Pay once and keep Premium.
+
+### Settings > Premium
+Button: Restore Purchase
+Description: Reactivates Premium that you purchased previously.
 
 ### Free limit notice
 Title: Premium required
@@ -67,8 +77,13 @@ We couldn’t verify your purchase. Please try again later.
 特典 3: すべての機能を利用
 価格表示: {PRICE} · 1回限りのお支払い
 購入ボタン: プレミアムを購入
+復元案内: 以前に購入しましたか？
 復元ボタン: 購入を復元
 補足: 一度購入すれば、ずっと利用できます。
+
+### 設定 > プレミアム
+ボタン: 購入を復元
+説明: 以前購入したプレミアムを再び有効にします。
 
 ### 無料版の制限案内
 タイトル: プレミアムが必要です
@@ -92,8 +107,13 @@ We couldn’t verify your purchase. Please try again later.
 权益 3: 使用全部功能
 价格行: {PRICE} · 一次性购买
 购买按钮: 升级高级版
+恢复提示: 以前购买过吗？
 恢复按钮: 恢复购买
 辅助文案: 一次购买，长期使用。
+
+### 设置 > 高级版
+按钮: 恢复购买
+说明: 重新启用您之前购买的高级版。
 
 ### 免费版限制提示
 标题: 需要高级版
@@ -117,8 +137,13 @@ We couldn’t verify your purchase. Please try again later.
 लाभ 3: सभी सुविधाएँ इस्तेमाल करें
 कीमत: {PRICE} · एक बार का भुगतान
 खरीद बटन: प्रीमियम खरीदें
-रिस्टोर बटन: खरीदारी पुनर्स्थापित करें
+रिकवरी संकेत: क्या आपने पहले खरीदा था?
+रिकवरी बटन: खरीदारी पुनर्स्थापित करें
 सहायक टेक्स्ट: एक बार खरीदें, हमेशा इस्तेमाल करें।
+
+### सेटिंग > प्रीमियम
+बटन: खरीदारी पुनर्स्थापित करें
+विवरण: पहले खरीदे गए प्रीमियम को फिर से सक्रिय करें।
 
 ### मुफ्त संस्करण सीमा
 शीर्षक: प्रीमियम आवश्यक है
@@ -142,8 +167,13 @@ Beneficio 2: Añade varios medicamentos
 Beneficio 3: Accede a todas las funciones
 Precio: {PRICE} · Pago único
 Botón de compra: Comprar Premium
+Aviso de recuperación: ¿Ya lo compraste antes?
 Restaurar: Restaurar compra
 Texto auxiliar: Paga una vez y conserva Premium.
+
+### Ajustes > Premium
+Botón: Restaurar compra
+Descripción: Vuelve a activar Premium si ya lo compraste antes.
 
 ### Aviso de límite gratuito
 Título: Se necesita Premium
@@ -163,5 +193,6 @@ No se pudo verificar la compra. Inténtalo de nuevo más tarde.
 2. 구매 버튼에는 가능하면 가격을 중복해서 넣지 않고, 버튼 위 가격 줄에만 표시한다.
 3. 무료 버전의 약 1개 제한 안내는 두 번째 약 추가 시점에만 노출한다.
 4. 프리미엄 구매 완료 후에는 광고 영역을 즉시 제거하고 약 추가 제한도 즉시 해제한다.
-5. ‘구매 복원’은 설정 > 프리미엄 영역에 항상 제공한다.
-6. 결제가 취소되거나 오류가 발생해도 복약 데이터와 알림 기능은 영향을 받지 않는다.
+5. 한국어에서는 ‘구매 복원’ 대신 ‘이전 구매 복구’를 사용하고, 기존 결제를 다시 청구하는 기능이 아니라는 뜻이 드러나도록 설명 문구를 함께 표시한다.
+6. ‘이전 구매 복구’는 프리미엄 구매 화면과 설정 > 프리미엄 영역에서 제공한다.
+7. 결제가 취소되거나 오류가 발생해도 복약 데이터와 알림 기능은 영향을 받지 않는다.
