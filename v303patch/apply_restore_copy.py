@@ -31,4 +31,8 @@ if old_dialog not in s:
 s = s.replace(old_dialog, new_dialog, 1)
 main.write_text(s, encoding='utf-8')
 
+# Apply release contact/link configuration in the same V3.0.3 build.
+release_patch = Path(__file__).with_name('apply_release_links.py')
+exec(compile(release_patch.read_text(encoding='utf-8'), str(release_patch), 'exec'), {'__name__':'__main__'})
+
 print('V3.0.3 purchase-restore copy patch applied')
