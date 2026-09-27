@@ -110,6 +110,10 @@ jobs:
           cp "$SIGNER" apksigner.jar
           unzip -tq yak-alimi-v3.0.2-unsigned.apk >/dev/null
           unzip -tq yak-alimi-v3.0.2-unsigned.aab >/dev/null
+          mkdir -p release-source
+          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java release-source/
+          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java release-source/
+          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java release-source/
 
       - name: Upload Play Store preparation artifacts
         uses: actions/upload-artifact@v4
@@ -119,4 +123,5 @@ jobs:
             yak-alimi-v3.0.2-unsigned.apk
             yak-alimi-v3.0.2-unsigned.aab
             apksigner.jar
+            release-source/
           if-no-files-found: error
