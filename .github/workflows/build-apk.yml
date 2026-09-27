@@ -55,7 +55,10 @@ jobs:
           tar -tzf v30-overlay.tar.gz >/dev/null
           tar -xzf v30-overlay.tar.gz -C yak_alimi_v21_work
           sed -i 's/android.useAndroidX=false/android.useAndroidX=true/' yak_alimi_v21_work/gradle.properties
+          sed -i '/import com.google.android.ump.PrivacyOptionsRequirementStatus;/d' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
+          sed -i 's/PrivacyOptionsRequirementStatus.REQUIRED/ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED/' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
           grep -q "android.useAndroidX=true" yak_alimi_v21_work/gradle.properties
+          grep -q "ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
           grep -q "versionCode 30" yak_alimi_v21_work/app/build.gradle
           grep -q "versionName '3.0.0'" yak_alimi_v21_work/app/build.gradle
           grep -q "play-services-ads:25.5.0" yak_alimi_v21_work/app/build.gradle
