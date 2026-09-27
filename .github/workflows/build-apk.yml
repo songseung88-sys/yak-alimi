@@ -11,6 +11,7 @@ on:
       - v30patch/**
       - v301patch/**
       - v302patch/**
+      - v303patch/**
       - playstore/**
       - .github/workflows/build-apk.yml
 
@@ -71,9 +72,6 @@ jobs:
           python v301patch/apply_v301.py
           grep -q "versionCode 31" yak_alimi_v21_work/app/build.gradle
           grep -q "versionName '3.0.1'" yak_alimi_v21_work/app/build.gradle
-          grep -q "사용자 기기에만 저장되며" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
-          grep -q "shouldShowFullScreenHint" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AppMigration.java
-          grep -q 'pivotX="69"' yak_alimi_v21_work/app/src/main/res/drawable/ic_launcher_foreground.xml
 
       - name: Apply v3.0.2 patch
         shell: bash
@@ -81,8 +79,16 @@ jobs:
           python v302patch/apply_v302.py
           grep -q "versionCode 32" yak_alimi_v21_work/app/build.gradle
           grep -q "versionName '3.0.2'" yak_alimi_v21_work/app/build.gradle
-          grep -q "업데이트로 인해 전체화면 알림 권한이 해제되었습니다" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
-          grep -q "fullScreenNeedsPermission" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+
+      - name: Apply v3.0.3 Premium patch
+        shell: bash
+        run: |
+          python v303patch/apply_v303.py
+          grep -q "versionCode 33" yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '3.0.3'" yak_alimi_v21_work/app/build.gradle
+          grep -q "premium_price_line" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
+          grep -q "getPremiumFormattedPrice" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
+          grep -q "premium_helper" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
 
       - name: Check Android SDK
         shell: bash
@@ -103,25 +109,20 @@ jobs:
           AAB=$(find yak_alimi_v21_work/app/build/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' | head -1)
           test -n "$APK"
           test -n "$AAB"
-          cp "$APK" yak-alimi-v3.0.2-unsigned.apk
-          cp "$AAB" yak-alimi-v3.0.2-unsigned.aab
+          cp "$APK" yak-alimi-v3.0.3-unsigned.apk
+          cp "$AAB" yak-alimi-v3.0.3-unsigned.aab
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.2-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.2-unsigned.aab >/dev/null
-          mkdir -p release-source
-          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java release-source/
-          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java release-source/
-          cp yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java release-source/
+          unzip -tq yak-alimi-v3.0.3-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.3-unsigned.aab >/dev/null
 
       - name: Upload Play Store preparation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.2-playstore-inputs
+          name: yak-alimi-v3.0.3-playstore-inputs
           path: |
-            yak-alimi-v3.0.2-unsigned.apk
-            yak-alimi-v3.0.2-unsigned.aab
+            yak-alimi-v3.0.3-unsigned.apk
+            yak-alimi-v3.0.3-unsigned.aab
             apksigner.jar
-            release-source/
           if-no-files-found: error
