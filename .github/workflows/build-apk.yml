@@ -1,0 +1,60 @@
+name: Build Yak Alimi APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'source.b64'
+      - '.github/workflows/build-apk.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Restore Android project
+        run: |
+          base64 --decode source.b64 > yak-alimi-source.zip
+          unzip -q yak-alimi-source.zip
+          test -f yak_alimi_android/app/build.gradle
+
+      - name: Run inventory logic test
+        run: |
+          cd yak_alimi_android
+          javac tools/InventoryLogicTest.java
+          java -cp tools InventoryLogicTest
+
+      - name: Build debug APK
+        run: |
+          cd yak_alimi_android
+          gradle :app:assembleDebug --stacktrace
+
+      - name: Rename APK
+        run: cp yak_alimi_android/app/build/outputs/apk/debug/app-debug.apk yak-alimi-v1.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yak-alimi-v1-apk
+          path: yak-alimi-v1.apk
+          if-no-files-found: error
