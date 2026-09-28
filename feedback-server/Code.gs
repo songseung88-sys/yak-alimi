@@ -2,6 +2,12 @@ const DESTINATION_EMAIL = 'songseung88@hanmail.net';
 const DAILY_LIMIT = 100;
 const MAX_MESSAGE_LENGTH = 3000;
 
+function doGet() {
+  return ContentService
+    .createTextOutput('Yak Alimi feedback server is running.')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {
