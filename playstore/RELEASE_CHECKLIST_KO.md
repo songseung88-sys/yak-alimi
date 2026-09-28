@@ -67,7 +67,8 @@
 - [x] 업로드 인증서 별도 추출
 - [x] 업로드 키 백업 파일 준비
 - [x] 개인키와 비밀번호를 GitHub 공개 저장소에 올리지 않음
-- [ ] Play App Signing 초기 설정 시 기존 사이드로드 앱과의 서명 연속성 전략 최종 확인
+- [x] Play App Signing 전략 문서화: Google 생성 app signing key + 별도 upload key
+- [x] 기존 사이드로드 앱과 Play 설치본의 서명이 달라질 수 있으므로 첫 Play 테스트 전환 시 재설치 계획 수립
 - [ ] Play Console 비공개/내부 테스트 트랙에 AAB 업로드
 
 ## H. 앱 기능 QA
@@ -85,6 +86,7 @@
 
 ## I. 새 개인 개발자 계정 비공개 테스트
 - [x] 14일 QA 계획 준비
+- [x] 테스터 모집 메시지·설치 안내·피드백 양식 준비
 - [ ] 앱 설정 필수 항목 완료
 - [ ] 비공개 테스트 트랙 생성
 - [ ] 테스터 최소 12명 모집
@@ -94,7 +96,7 @@
 
 ## 지금 남아 있는 핵심 외부 의존사항
 1. Google Play 개발자 신원 확인 완료
-2. Play Console 앱 생성 및 Play App Signing 설정
+2. Play Console 앱 생성 및 Play App Signing 실제 설정
 3. AdMob 실제 App ID / 배너 광고 단위 ID
 4. `premium_unlock` 실제 상품 생성
 5. 실제 앱 화면 기반 스토어 스크린샷 촬영
@@ -102,6 +104,8 @@
 
 ## 참고 문서
 - `PLAY_CONSOLE_COPY_PASTE_KO.md`: 건강 앱, 전체화면 인텐트, Data safety, 광고, 프리미엄 등 Console 입력안
+- `PLAY_APP_SIGNING_PLAN_KO.md`: Play App Signing 및 사이드로드→Play 전환 계획
+- `CLOSED_TEST_RECRUITMENT_KO.md`: 테스터 모집·설치 안내·피드백 양식
 - `DATA_SAFETY_DRAFT_KO.md`: Data safety 상세 초안
 - `STORE_LISTING_6LANG.md`: 6개 언어 스토어 문구
 - `SCREENSHOT_CAPTURE_PLAN_KO.md`: 실제 앱 화면 촬영 계획
