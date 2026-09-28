@@ -1,0 +1,23 @@
+name: Prepare font for screenshot graphics
+on:
+  push:
+    branches:
+      - design-font-20260928
+jobs:
+  font:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download open-source Korean font
+        run: |
+          curl --fail --location --retry 3 --output NanumGothic-Bold.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Bold.ttf
+          curl --fail --location --retry 3 --output NanumGothic-Regular.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Regular.ttf
+          curl --fail --location --retry 3 --output OFL.txt https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/OFL.txt
+          test -s NanumGothic-Bold.ttf
+          test -s NanumGothic-Regular.ttf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-font
+          path: |
+            NanumGothic-Bold.ttf
+            NanumGothic-Regular.ttf
+            OFL.txt
