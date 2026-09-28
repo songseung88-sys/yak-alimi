@@ -55,9 +55,11 @@ exec(compile(registration_patch.read_text(encoding='utf-8'), str(registration_pa
 calendar_patch = Path(__file__).with_name('apply_calendar_history.py')
 exec(compile(calendar_patch.read_text(encoding='utf-8'), str(calendar_patch), 'exec'), {'__name__':'__main__'})
 
-# Size history popups before show() so the entrance animation never visibly shifts sideways.
+# Apply the existing history popup layout, then render it without a separate window.
 popup_stability_patch = Path(__file__).with_name('apply_history_popup_stability.py')
 exec(compile(popup_stability_patch.read_text(encoding='utf-8'), str(popup_stability_patch), 'exec'), {'__name__':'__main__'})
+popup_no_animation_patch = Path(__file__).with_name('apply_history_popup_no_animation.py')
+exec(compile(popup_no_animation_patch.read_text(encoding='utf-8'), str(popup_no_animation_patch), 'exec'), {'__name__':'__main__'})
 
 # Keep feedback composition inside the app; the HTTPS endpoint is connected after Apps Script deployment.
 feedback_patch = Path(__file__).with_name('apply_in_app_feedback.py')
