@@ -55,6 +55,10 @@ exec(compile(registration_patch.read_text(encoding='utf-8'), str(registration_pa
 calendar_patch = Path(__file__).with_name('apply_calendar_history.py')
 exec(compile(calendar_patch.read_text(encoding='utf-8'), str(calendar_patch), 'exec'), {'__name__':'__main__'})
 
+# Size history popups before show() so the entrance animation never visibly shifts sideways.
+popup_stability_patch = Path(__file__).with_name('apply_history_popup_stability.py')
+exec(compile(popup_stability_patch.read_text(encoding='utf-8'), str(popup_stability_patch), 'exec'), {'__name__':'__main__'})
+
 # Keep feedback composition inside the app; the HTTPS endpoint is connected after Apps Script deployment.
 feedback_patch = Path(__file__).with_name('apply_in_app_feedback.py')
 exec(compile(feedback_patch.read_text(encoding='utf-8'), str(feedback_patch), 'exec'), {'__name__':'__main__'})
@@ -63,4 +67,4 @@ exec(compile(feedback_patch.read_text(encoding='utf-8'), str(feedback_patch), 'e
 admob_patch = Path(__file__).with_name('apply_production_admob.py')
 exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
 
-print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, registration-date, calendar-history, in-app-feedback, and production AdMob patches applied')
+print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, registration-date, calendar-history, stable-history-popup, in-app-feedback, and production AdMob patches applied')
