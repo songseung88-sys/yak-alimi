@@ -39,4 +39,8 @@ exec(compile(release_patch.read_text(encoding='utf-8'), str(release_patch), 'exe
 name_patch = Path(__file__).with_name('apply_localized_app_names.py')
 exec(compile(name_patch.read_text(encoding='utf-8'), str(name_patch), 'exec'), {'__name__':'__main__'})
 
-print('V3.0.3 purchase-restore, release-link, and localized-name patches applied')
+# Make the Android system Back button follow the app's internal navigation.
+back_patch = Path(__file__).with_name('apply_back_navigation.py')
+exec(compile(back_patch.read_text(encoding='utf-8'), str(back_patch), 'exec'), {'__name__':'__main__'})
+
+print('V3.0.3 purchase-restore, release-link, localized-name, and back-navigation patches applied')
