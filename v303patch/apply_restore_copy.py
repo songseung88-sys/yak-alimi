@@ -73,4 +73,8 @@ exec(compile(feedback_patch.read_text(encoding='utf-8'), str(feedback_patch), 'e
 admob_patch = Path(__file__).with_name('apply_production_admob.py')
 exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
 
+# Use approachable remaining-quantity language in the home list and related screens.
+quantity_patch = Path(__file__).with_name('apply_remaining_quantity_copy.py')
+exec(compile(quantity_patch.read_text(encoding='utf-8'), str(quantity_patch), 'exec'), {'__name__':'__main__'})
+
 print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, registration-date, calendar-history, stable-history-popup, in-app-feedback, and production AdMob patches applied')
