@@ -47,12 +47,12 @@ exec(compile(back_patch.read_text(encoding='utf-8'), str(back_patch), 'exec'), {
 supplement_patch = Path(__file__).with_name('apply_med_supplement_copy.py')
 exec(compile(supplement_patch.read_text(encoding='utf-8'), str(supplement_patch), 'exec'), {'__name__':'__main__'})
 
+# Replace the old 14-day history list with a monthly adherence calendar.
+calendar_patch = Path(__file__).with_name('apply_calendar_history.py')
+exec(compile(calendar_patch.read_text(encoding='utf-8'), str(calendar_patch), 'exec'), {'__name__':'__main__'})
+
 # Use the real AdMob app/banner IDs only in the production working tree.
 admob_patch = Path(__file__).with_name('apply_production_admob.py')
 exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
 
-# Temporary diagnostic to inspect the reconstructed history/storage code before replacing the UI.
-inspect_patch = Path(__file__).with_name('inspect_history_source.py')
-exec(compile(inspect_patch.read_text(encoding='utf-8'), str(inspect_patch), 'exec'), {'__name__':'__main__'})
-
-print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, and production AdMob patches applied')
+print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, calendar-history, and production AdMob patches applied')
