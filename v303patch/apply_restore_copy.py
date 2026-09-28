@@ -43,4 +43,8 @@ exec(compile(name_patch.read_text(encoding='utf-8'), str(name_patch), 'exec'), {
 back_patch = Path(__file__).with_name('apply_back_navigation.py')
 exec(compile(back_patch.read_text(encoding='utf-8'), str(back_patch), 'exec'), {'__name__':'__main__'})
 
-print('V3.0.3 purchase-restore, release-link, localized-name, and back-navigation patches applied')
+# Broaden user-facing copy so the same workflows naturally cover supplements too.
+supplement_patch = Path(__file__).with_name('apply_med_supplement_copy.py')
+exec(compile(supplement_patch.read_text(encoding='utf-8'), str(supplement_patch), 'exec'), {'__name__':'__main__'})
+
+print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, and medication/supplement copy patches applied')
