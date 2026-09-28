@@ -47,4 +47,8 @@ exec(compile(back_patch.read_text(encoding='utf-8'), str(back_patch), 'exec'), {
 supplement_patch = Path(__file__).with_name('apply_med_supplement_copy.py')
 exec(compile(supplement_patch.read_text(encoding='utf-8'), str(supplement_patch), 'exec'), {'__name__':'__main__'})
 
-print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, and medication/supplement copy patches applied')
+# Use the real AdMob app/banner IDs only in the production working tree.
+admob_patch = Path(__file__).with_name('apply_production_admob.py')
+exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
+
+print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, and production AdMob patches applied')
