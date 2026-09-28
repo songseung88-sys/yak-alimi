@@ -7,6 +7,7 @@ TEST_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
 TEST_BANNER_ID = 'ca-app-pub-3940256099942544/9214589741'
 PROD_APP_ID = 'ca-app-pub-9117654406433976~4144682538'
 PROD_BANNER_ID = 'ca-app-pub-9117654406433976/8659651777'
+FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyWScf0aMEkfCF5yJQpsEX_mW6t8UXBq3NTLHTK7h-evPGPQAeLBb9qmnwShpXjqOLGFw/exec'
 
 TEXT_EXTS = {'.xml', '.java', '.kt', '.gradle', '.properties', '.txt'}
 
@@ -37,8 +38,20 @@ if counts[TEST_APP_ID] < 1:
 if counts[TEST_BANNER_ID] < 1:
     raise SystemExit('Google test banner ad unit ID not found in reconstructed project')
 
+# Connect the deployed Apps Script receiver after the in-app feedback form patch has created
+# the blank BuildConfig field. This setting is copied into the closed-test variant too.
+build = ROOT / 'app/build.gradle'
+s = build.read_text(encoding='utf-8')
+old = 'buildConfigField "String", "FEEDBACK_ENDPOINT", "\\\"\\\""'
+new = 'buildConfigField "String", "FEEDBACK_ENDPOINT", "\\\"' + FEEDBACK_ENDPOINT + '\\\""'
+if old not in s:
+    raise SystemExit('blank FEEDBACK_ENDPOINT BuildConfig field not found')
+s = s.replace(old, new, 1)
+build.write_text(s, encoding='utf-8')
+
 print('Production AdMob IDs applied:')
 print(f'  App ID replacements: {counts[TEST_APP_ID]}')
 print(f'  Banner ID replacements: {counts[TEST_BANNER_ID]}')
+print('Feedback endpoint connected')
 for f in changed_files:
     print(f'  changed: {f}')
