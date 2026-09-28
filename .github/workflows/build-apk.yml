@@ -123,7 +123,7 @@ jobs:
         shell: bash
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
-          sdkmanager --install 'platforms;android-36' 'build-tools;35.0.0'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install 'platforms;android-36' 'build-tools;35.0.0'
           test -d "$ANDROID_HOME/platforms/android-36"
 
       - name: Build production APK and AAB
