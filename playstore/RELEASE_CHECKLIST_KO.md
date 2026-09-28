@@ -34,13 +34,17 @@
 - [ ] Play Console Data safety 실제 제출
 
 ## D. AdMob
-- [ ] AdMob 계정 준비 또는 현재 상태 확인
-- [ ] Android 앱 `약 알리미` 등록
-- [ ] 실제 AdMob App ID 발급
-- [ ] 실제 Anchored Adaptive Banner 광고 단위 ID 발급
-- [x] 개발/테스트 빌드는 Google 테스트 광고 ID 사용
-- [ ] 프로덕션 빌드에 실제 광고 ID 반영
+- [x] 기존 AdMob 계정에 현재 Google Play용 Google 계정을 관리자로 추가
+- [ ] AdMob 계정 승인 완료
+- [x] Android 앱 `약 알리미` 등록
+- [x] 실제 AdMob App ID 발급
+- [x] 실제 Anchored Adaptive Banner 광고 단위 ID 발급
+- [x] 개발/비공개 테스트 빌드는 Google 테스트 광고 ID 또는 광고 비활성 상태 사용
+- [x] 프로덕션 빌드에 실제 광고 ID 반영
+- [x] 비공개 테스트 Premium 빌드에는 실제 AdMob ID가 들어가지 않도록 빌드 분리
 - [ ] UMP 메시지/동의 설정 최종 확인
+- [ ] Play 공개 후 AdMob에서 Play Store 등록정보 연결 및 앱 준비 상태 검토
+- [ ] app-ads.txt 게시 및 확인
 
 ## E. 프리미엄 일회성 구매
 - [x] Product ID 확정: `premium_unlock`
@@ -97,7 +101,7 @@
 ## 지금 남아 있는 핵심 외부 의존사항
 1. Google Play 개발자 신원 확인 완료
 2. Play Console 앱 생성 및 Play App Signing 실제 설정
-3. AdMob 실제 App ID / 배너 광고 단위 ID
+3. AdMob 계정 승인 완료 + UMP/app-ads.txt 최종 설정
 4. `premium_unlock` 실제 상품 생성
 5. 실제 앱 화면 기반 스토어 스크린샷 촬영
 6. 비공개 테스트 시작 및 12명 이상 테스터 14일 연속 참여
