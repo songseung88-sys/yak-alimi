@@ -61,6 +61,10 @@ exec(compile(popup_stability_patch.read_text(encoding='utf-8'), str(popup_stabil
 popup_no_animation_patch = Path(__file__).with_name('apply_history_popup_no_animation.py')
 exec(compile(popup_no_animation_patch.read_text(encoding='utf-8'), str(popup_no_animation_patch), 'exec'), {'__name__':'__main__'})
 
+# Show each medication or supplement in the home summary when several are registered.
+home_multi_patch = Path(__file__).with_name('apply_home_multi_medicine.py')
+exec(compile(home_multi_patch.read_text(encoding='utf-8'), str(home_multi_patch), 'exec'), {'__name__':'__main__'})
+
 # Keep feedback composition inside the app; the HTTPS endpoint is connected after Apps Script deployment.
 feedback_patch = Path(__file__).with_name('apply_in_app_feedback.py')
 exec(compile(feedback_patch.read_text(encoding='utf-8'), str(feedback_patch), 'exec'), {'__name__':'__main__'})
