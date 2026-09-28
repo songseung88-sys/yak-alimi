@@ -55,6 +55,14 @@ if old not in s:
     raise SystemExit('MedicationStore getMedicines anchor missing')
 s = s.replace(old, new, 1)
 
+# The real registration date is the moment the user saves a newly created item, not when the
+# editor happened to be opened (important around midnight or after a long edit session).
+old = '''    public static synchronized void addMedicine(Context c, Medicine m) {\n        List<Medicine> meds = getMedicines(c);\n        sanitize(m);\n        meds.add(m);'''
+new = '''    public static synchronized void addMedicine(Context c, Medicine m) {\n        List<Medicine> meds = getMedicines(c);\n        m.createdDate = LocalDate.now().toString();\n        sanitize(m);\n        meds.add(m);'''
+if old not in s:
+    raise SystemExit('MedicationStore addMedicine anchor missing')
+s = s.replace(old, new, 1)
+
 old = '''    private static void sanitize(Medicine m) {\n        if (m.id == null || m.id.isEmpty()) m.id = java.util.UUID.randomUUID().toString();'''
 new = '''    private static void sanitize(Medicine m) {\n        if (m.id == null || m.id.isEmpty()) m.id = java.util.UUID.randomUUID().toString();\n        if (m.createdDate == null || m.createdDate.isEmpty()) m.createdDate = LocalDate.now().toString();\n        try { LocalDate.parse(m.createdDate); } catch (Exception e) { m.createdDate = LocalDate.now().toString(); }'''
 if old not in s:
