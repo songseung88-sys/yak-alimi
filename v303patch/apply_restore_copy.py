@@ -47,6 +47,10 @@ exec(compile(back_patch.read_text(encoding='utf-8'), str(back_patch), 'exec'), {
 supplement_patch = Path(__file__).with_name('apply_med_supplement_copy.py')
 exec(compile(supplement_patch.read_text(encoding='utf-8'), str(supplement_patch), 'exec'), {'__name__':'__main__'})
 
+# Persist per-medication registration dates so history never extends before a medication existed.
+registration_patch = Path(__file__).with_name('apply_med_registration_date.py')
+exec(compile(registration_patch.read_text(encoding='utf-8'), str(registration_patch), 'exec'), {'__name__':'__main__'})
+
 # Replace the old 14-day history list with a monthly adherence calendar.
 calendar_patch = Path(__file__).with_name('apply_calendar_history.py')
 exec(compile(calendar_patch.read_text(encoding='utf-8'), str(calendar_patch), 'exec'), {'__name__':'__main__'})
@@ -55,8 +59,4 @@ exec(compile(calendar_patch.read_text(encoding='utf-8'), str(calendar_patch), 'e
 admob_patch = Path(__file__).with_name('apply_production_admob.py')
 exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
 
-# Temporary diagnostic: print the reconstructed medicine/storage source.
-inspect_patch = Path(__file__).with_name('inspect_medication_store.py')
-exec(compile(inspect_patch.read_text(encoding='utf-8'), str(inspect_patch), 'exec'), {'__name__':'__main__'})
-
-print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, calendar-history, and production AdMob patches applied')
+print('V3.0.3 purchase-restore, release-link, localized-name, back-navigation, medication/supplement, registration-date, calendar-history, and production AdMob patches applied')
