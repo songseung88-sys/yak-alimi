@@ -59,4 +59,8 @@ if old not in s:
 s = s.replace(old, new, 1)
 MAIN.write_text(s, encoding='utf-8')
 
-print('Closed-test Premium entitlement applied to test working copy only')
+# Keep the closed-test build on Google's test AdMob identifiers even though it is Premium.
+admob_patch = Path(__file__).with_name('apply_closed_test_admob.py')
+exec(compile(admob_patch.read_text(encoding='utf-8'), str(admob_patch), 'exec'), {'__name__':'__main__'})
+
+print('Closed-test Premium entitlement applied; Google test AdMob IDs retained')
