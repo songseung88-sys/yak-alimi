@@ -1,0 +1,41 @@
+name: Inspect medication icon integration
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - .github/workflows/inspect-med-icon-integration.yml
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore current v3.0.5 source
+        shell: bash
+        run: |
+          cat v21source/part* > v21source.full.b64
+          base64 --decode v21source.full.b64 > yak-alimi-v2.1-source.tar.gz
+          tar -xzf yak-alimi-v2.1-source.tar.gz
+          python v22patch/apply_v22.py
+          cat v30patch/part* > v30-overlay.full.b64
+          base64 --decode v30-overlay.full.b64 > v30-overlay.tar.gz
+          tar -xzf v30-overlay.tar.gz -C yak_alimi_v21_work
+          sed -i 's/android.useAndroidX=false/android.useAndroidX=true/' yak_alimi_v21_work/gradle.properties
+          sed -i '/import com.google.android.ump.PrivacyOptionsRequirementStatus;/d' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java || true
+          sed -i 's/PrivacyOptionsRequirementStatus.REQUIRED/ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED/' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java || true
+          python v301patch/apply_v301.py
+          python v302patch/apply_v302.py
+          python v303patch/apply_v303.py
+          python v303patch/apply_restore_copy.py
+          python v303patch/apply_api36.py
+          python v303patch/apply_v305_repeat_fullscreen.py
+      - name: Print editor integration code
+        shell: bash
+        run: |
+          F=yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+          grep -nE 'startNewMedicine|startEditMedicine|showMedicineEditor|saveMedicine|register_medicine|deleteMedicine|draft=' "$F" || true
+          echo '=== MAIN 430-800 ==='
+          sed -n '430,800p' "$F"
+          echo '=== FULLSCREEN ==='
+          sed -n '1,150p' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
