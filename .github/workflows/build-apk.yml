@@ -116,10 +116,12 @@ jobs:
         shell: bash
         run: |
           python v303patch/apply_v306_medication_icons.py
+          python v303patch/apply_v306_icon_compile_fix.py
           grep -q 'versionCode 38' yak_alimi_v21_work/app/build.gradle
           grep -q 'versionName '\''3.0.6'\''' yak_alimi_v21_work/app/build.gradle
           test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MedicationIconStore.java
           test -f yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MedicationIconView.java
+          grep -q 'setMinimumWidth((int)dp(36))' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MedicationIconView.java
           grep -q 'medicine_icon' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
           grep -q 'editDraftIcon' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
           grep -q 'MedicationIconView pill' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
