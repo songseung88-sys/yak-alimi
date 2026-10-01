@@ -103,21 +103,30 @@ jobs:
           grep -q 'versionName '\''3.0.4'\''' yak_alimi_v21_work/app/build.gradle
           grep -q "version '8.10.1'" yak_alimi_v21_work/build.gradle
 
+      - name: Apply v3.0.5 repeat full-screen reminder fix
+        shell: bash
+        run: |
+          python v303patch/apply_v305_repeat_fullscreen.py
+          grep -q 'versionCode 36' yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionName '\''3.0.5'\''' yak_alimi_v21_work/app/build.gradle
+          grep -q 'secondaryNotificationId' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
+          grep -q 'if (second) c.getSystemService(NotificationManager.class).cancel(baseNid);' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
+
       - name: Create closed-test Premium variant
         shell: bash
         run: |
           cp -a yak_alimi_v21_work yak_alimi_closedtest_work
           python v303patch/apply_closed_test_premium.py yak_alimi_closedtest_work
-          # Use the normal build (34) for the internal purchase test first,
-          # then the Premium-enabled build (35) for the closed test. A later
-          # public build must increment again to at least 36.
-          sed -i 's/versionCode 34/versionCode 35/' yak_alimi_closedtest_work/app/build.gradle
-          grep -q 'versionCode 34' yak_alimi_v21_work/app/build.gradle
-          grep -q 'versionCode 35' yak_alimi_closedtest_work/app/build.gradle
+          # v3.0.5 production uses versionCode 36. The closed-test Premium
+          # variant uses 37 so it can replace the previously uploaded code 35.
+          sed -i 's/versionCode 36/versionCode 37/' yak_alimi_closedtest_work/app/build.gradle
+          grep -q 'versionCode 36' yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionCode 37' yak_alimi_closedtest_work/app/build.gradle
           grep -q "CLOSED_TEST_PREMIUM = true" yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/BillingManager.java
           grep -q "test_premium_active" yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/I18n.java
           grep -q "isClosedTestPremium" yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/MainActivity.java
           ! grep -q "CLOSED_TEST_PREMIUM = true" yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
+          grep -q 'secondaryNotificationId' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
 
       - name: Check Android SDK
         shell: bash
@@ -146,26 +155,26 @@ jobs:
           TEST_APK=$(find yak_alimi_closedtest_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           TEST_AAB=$(find yak_alimi_closedtest_work/app/build/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' | head -1)
           test -n "$PROD_APK" && test -n "$PROD_AAB" && test -n "$TEST_APK" && test -n "$TEST_AAB"
-          cp "$PROD_APK" yak-alimi-v3.0.4-production-unsigned.apk
-          cp "$PROD_AAB" yak-alimi-v3.0.4-production-unsigned.aab
-          cp "$TEST_APK" yak-alimi-v3.0.4-closedtest-unsigned.apk
-          cp "$TEST_AAB" yak-alimi-v3.0.4-closedtest-unsigned.aab
+          cp "$PROD_APK" yak-alimi-v3.0.5-production-unsigned.apk
+          cp "$PROD_AAB" yak-alimi-v3.0.5-production-unsigned.aab
+          cp "$TEST_APK" yak-alimi-v3.0.5-closedtest-unsigned.apk
+          cp "$TEST_AAB" yak-alimi-v3.0.5-closedtest-unsigned.aab
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.4-production-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.4-production-unsigned.aab >/dev/null
-          unzip -tq yak-alimi-v3.0.4-closedtest-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.4-closedtest-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.5-production-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.5-production-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.5-closedtest-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.5-closedtest-unsigned.aab >/dev/null
 
       - name: Upload Play Store preparation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.4-production-and-closedtest-inputs
+          name: yak-alimi-v3.0.5-production-and-closedtest-inputs
           path: |
-            yak-alimi-v3.0.4-production-unsigned.apk
-            yak-alimi-v3.0.4-production-unsigned.aab
-            yak-alimi-v3.0.4-closedtest-unsigned.apk
-            yak-alimi-v3.0.4-closedtest-unsigned.aab
+            yak-alimi-v3.0.5-production-unsigned.apk
+            yak-alimi-v3.0.5-production-unsigned.aab
+            yak-alimi-v3.0.5-closedtest-unsigned.apk
+            yak-alimi-v3.0.5-closedtest-unsigned.aab
             apksigner.jar
           if-no-files-found: error
