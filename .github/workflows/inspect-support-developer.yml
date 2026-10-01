@@ -32,7 +32,7 @@ jobs:
           python v303patch/apply_api36.py
           python v303patch/apply_v305_repeat_fullscreen.py
           python v303patch/apply_v306_medication_icons.py
-          python v303patch/apply_v306_compile_fix.py
+          python v303patch/apply_v306_icon_compile_fix.py
       - name: Print support developer code and I18n entries
         shell: bash
         run: |
