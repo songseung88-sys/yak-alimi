@@ -50,7 +50,7 @@ jobs:
           sed -i '/import com.google.android.ump.PrivacyOptionsRequirementStatus;/d' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
           sed -i 's/PrivacyOptionsRequirementStatus.REQUIRED/ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED/' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
 
-      - name: Apply app patches through v3.0.8
+      - name: Apply app patches through v3.0.9
         shell: bash
         run: |
           python v301patch/apply_v301.py
@@ -63,17 +63,18 @@ jobs:
           python v303patch/apply_v306_icon_compile_fix.py
           python v303patch/apply_v307_support_options.py
           python v303patch/apply_v308_aligned_repeat_reminders.py
+          python v303patch/apply_v309_per_medicine_repeat_interval.py
 
           grep -q 'compileSdk 36' yak_alimi_v21_work/app/build.gradle
           grep -q 'targetSdk 36' yak_alimi_v21_work/app/build.gradle
-          grep -q 'versionCode 42' yak_alimi_v21_work/app/build.gradle
-          grep -q "versionName '3.0.8'" yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionCode 44' yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '3.0.9'" yak_alimi_v21_work/app/build.gradle
           grep -q 'scheduleNextSecondaryAligned' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
-          grep -q 'rescheduleSecondaryReminders' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
-          grep -q 'repeat_index' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmReceiver.java
-          grep -q 'repeat_every_hours' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
-          grep -q 'custom_interval_title' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
-          grep -q 'formatRepeatInterval' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+          grep -q 'snoozeMinutes(c, medId)' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
+          grep -q 'medicineSnoozeKey' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MedicationStore.java
+          grep -q 'draftRepeatMinutes' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+          grep -q 'editDraftRepeatInterval' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
+          ! grep -q 'I18n.t(this,"snooze"),formatRepeatInterval(MedicationStore.snoozeMinutes(this)),v->editSnooze()' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
           grep -q 'MedicationIconView' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
           grep -q 'support_coffee' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
 
@@ -82,11 +83,12 @@ jobs:
         run: |
           cp -a yak_alimi_v21_work yak_alimi_closedtest_work
           python v303patch/apply_closed_test_premium.py yak_alimi_closedtest_work
-          sed -i 's/versionCode 42/versionCode 43/' yak_alimi_closedtest_work/app/build.gradle
-          grep -q 'versionCode 42' yak_alimi_v21_work/app/build.gradle
-          grep -q 'versionCode 43' yak_alimi_closedtest_work/app/build.gradle
+          sed -i 's/versionCode 44/versionCode 45/' yak_alimi_closedtest_work/app/build.gradle
+          grep -q 'versionCode 44' yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionCode 45' yak_alimi_closedtest_work/app/build.gradle
           grep -q "CLOSED_TEST_PREMIUM = true" yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/BillingManager.java
-          grep -q 'scheduleNextSecondaryAligned' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
+          grep -q 'snoozeMinutes(c, medId)' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
+          grep -q 'editDraftRepeatInterval' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/MainActivity.java
 
       - name: Check Android SDK
         shell: bash
@@ -114,26 +116,26 @@ jobs:
           TEST_APK=$(find yak_alimi_closedtest_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           TEST_AAB=$(find yak_alimi_closedtest_work/app/build/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' | head -1)
           test -n "$PROD_APK" && test -n "$PROD_AAB" && test -n "$TEST_APK" && test -n "$TEST_AAB"
-          cp "$PROD_APK" yak-alimi-v3.0.8-production-unsigned.apk
-          cp "$PROD_AAB" yak-alimi-v3.0.8-production-unsigned.aab
-          cp "$TEST_APK" yak-alimi-v3.0.8-closedtest-unsigned.apk
-          cp "$TEST_AAB" yak-alimi-v3.0.8-closedtest-unsigned.aab
+          cp "$PROD_APK" yak-alimi-v3.0.9-production-unsigned.apk
+          cp "$PROD_AAB" yak-alimi-v3.0.9-production-unsigned.aab
+          cp "$TEST_APK" yak-alimi-v3.0.9-closedtest-unsigned.apk
+          cp "$TEST_AAB" yak-alimi-v3.0.9-closedtest-unsigned.aab
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.8-production-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.8-production-unsigned.aab >/dev/null
-          unzip -tq yak-alimi-v3.0.8-closedtest-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.8-closedtest-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.9-production-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.9-production-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.9-closedtest-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.9-closedtest-unsigned.aab >/dev/null
 
       - name: Upload release inputs
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.8-production-and-closedtest-inputs
+          name: yak-alimi-v3.0.9-production-and-closedtest-inputs
           path: |
-            yak-alimi-v3.0.8-production-unsigned.apk
-            yak-alimi-v3.0.8-production-unsigned.aab
-            yak-alimi-v3.0.8-closedtest-unsigned.apk
-            yak-alimi-v3.0.8-closedtest-unsigned.aab
+            yak-alimi-v3.0.9-production-unsigned.apk
+            yak-alimi-v3.0.9-production-unsigned.aab
+            yak-alimi-v3.0.9-closedtest-unsigned.apk
+            yak-alimi-v3.0.9-closedtest-unsigned.aab
             apksigner.jar
           if-no-files-found: error
