@@ -127,19 +127,19 @@ jobs:
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.10-production-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.10-production-unsigned.aab >/dev/null
-          unzip -tq yak-alimi-v3.0.10-closedtest-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.10-closedtest-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.11-production-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.11-production-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.11-closedtest-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.11-closedtest-unsigned.aab >/dev/null
 
       - name: Upload release inputs
         uses: actions/upload-artifact@v4
         with:
           name: yak-alimi-v3.0.11-production-and-closedtest-inputs
           path: |
-            yak-alimi-v3.0.10-production-unsigned.apk
-            yak-alimi-v3.0.10-production-unsigned.aab
-            yak-alimi-v3.0.10-closedtest-unsigned.apk
-            yak-alimi-v3.0.10-closedtest-unsigned.aab
+            yak-alimi-v3.0.11-production-unsigned.apk
+            yak-alimi-v3.0.11-production-unsigned.aab
+            yak-alimi-v3.0.11-closedtest-unsigned.apk
+            yak-alimi-v3.0.11-closedtest-unsigned.aab
             apksigner.jar
           if-no-files-found: error
