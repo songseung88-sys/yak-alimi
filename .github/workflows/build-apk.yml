@@ -66,11 +66,7 @@ jobs:
           python v303patch/apply_v309_per_medicine_repeat_interval.py
           python v303patch/apply_v310_grouped_overlapping_reminders.py
           python v303patch/apply_v311_alarm_auto_stop.py
-          python v303patch/apply_v312_ids_fixed.py
-          python v303patch/apply_v312_billing_catalog.py
-          python v303patch/apply_v312_billing_launch.py
-          python v303patch/apply_v312_support_consumption.py
-          python v303patch/apply_v312_support_ui.py
+          python v303patch/apply_v312_premium_offer_token.py
           python v303patch/apply_v312_version.py
 
           grep -q 'compileSdk 36' yak_alimi_v21_work/app/build.gradle
@@ -87,9 +83,7 @@ jobs:
           grep -q 'postDelayed(autoStopAlert, ALERT_AUTO_STOP_MS)' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
           grep -q 'editDraftRepeatInterval' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java
           grep -q 'support_coffee' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
-          grep -q 'SUPPORT_COFFEE_PRODUCT_ID' yak_alimi_v21_work/app/build.gradle
           grep -q 'setOfferToken' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
-          grep -q 'consumeSupportPurchase' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/BillingManager.java
 
       - name: Create closed-test Premium variant
         shell: bash
