@@ -6,8 +6,8 @@ done=False
 for line in lines:
     out.append(line)
     if "PREMIUM_PRODUCT_ID" in line and not done:
-        out.append('        buildConfigField "String", "SUPPORT_COFFEE_PRODUCT_ID", "\\"support-coffee-5000\\""')
-        out.append('        buildConfigField "String", "SUPPORT_MEAL_PRODUCT_ID", "\\"support-meal-10000\\""')
+        out.append('        buildConfigField "String", "SUPPORT_COFFEE_PRODUCT_ID", "\\"support_coffee_5000\\""')
+        out.append('        buildConfigField "String", "SUPPORT_MEAL_PRODUCT_ID", "\\"support_meal_10000\\""')
         done=True
 if not done:
     raise SystemExit("premium product id missing")
