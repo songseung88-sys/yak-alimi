@@ -63,5 +63,14 @@ jobs:
           b=s.index('    private void moveHistoryMonth',a)
           print(s[a:b+1200])
           PY
+          echo '===== confirmUndo ====='
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/MainActivity.java').read_text()
+          a=s.find('    private void confirmUndo')
+          print(s[a:a+2200] if a>=0 else 'not found')
+          PY
+          echo '===== AlarmScheduler APIs ====='
+          grep -nE 'public static|static void' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java || true
           echo '===== I18n record keys ====='
           grep -nE 'record|taken|missed|scheduled|undo|history|calendar' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java || true
