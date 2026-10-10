@@ -47,7 +47,9 @@ Google Mobile Ads SDK 25.5.0 기준으로 Google은 광고, 분석, 사기 방�
 - 전송 중 암호화: 예
 
 ## Google Play Billing
-프리미엄 결제는 Google Play Billing을 사용합니다. 신용카드 번호 같은 결제 수단 정보는 앱이 직접 수집/저장하지 않습니다. 구매 상태 확인에 필요한 정보는 Google Play를 통해 처리됩니다.
+프리미엄 및 개발자 응원 카드 결제는 Google Play Billing을 사용합니다. 신용카드 번호 같은 결제 수단 정보는 앱이 직접 수집/저장하지 않습니다. 구매 상태 확인 및 소비성 응원 카드 구매 처리에 필요한 정보는 Google Play를 통해 처리됩니다.
+
+응원 카드 개수는 앱의 로컬 저장공간에만 저장되며 개발자 서버로 전송되지 않습니다. 앱 데이터 삭제 또는 재설치 시 응원 카드 개수는 복원되지 않을 수 있습니다.
 
 ## 출시 직전 다시 확인할 항목
 1. 실제 적용된 Mobile Ads SDK 버전
@@ -55,4 +57,4 @@ Google Mobile Ads SDK 25.5.0 기준으로 Google은 광고, 분석, 사기 방�
 3. Play Billing 버전과 사용 방식
 4. Google Apps Script 의견 전송 URL 및 실제 전송 데이터
 5. Play Console Data safety의 최신 데이터 유형/목적 선택지
-6. 개발자 응원하기 링크의 실제 서비스와 그 서비스의 데이터 처리
+6. 개발자 응원 카드의 Google Play Billing 처리와 로컬 카드 저장 동작
