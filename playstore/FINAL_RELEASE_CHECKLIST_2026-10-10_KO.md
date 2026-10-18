@@ -107,3 +107,19 @@
 - [x] v3.0.18 versionCode 62 서명 AAB 업로드
 - [x] 릴리스 노트 입력
 - [x] 검토 후 프로덕션 제출 및 승인/배포
+
+
+## 9. 출시 후 AdMob
+- [x] 프로덕션 앱에 AdMob App ID / 배너 광고 단위 ID 포함
+- [x] UMP 동의 코드 포함
+- [ ] AdMob에서 약 알리미를 Google Play 스토어 앱과 연결
+- [ ] AdMob 앱 준비 상태(App readiness) 검토 시작/승인 확인
+- [ ] 개발자 웹사이트 호스트 루트에 app-ads.txt 게시
+- [ ] AdMob app-ads.txt 확인 완료
+- [ ] 실제 무료 사용자 환경에서 프로덕션 배너 광고 노출 확인
+
+### app-ads.txt 주의
+Google Play 개발자 웹사이트가 `https://songseung88-sys.github.io/yak-alimi/` 이므로
+AdMob 크롤러가 확인하는 위치는 프로젝트 경로가 아니라
+`https://songseung88-sys.github.io/app-ads.txt` 이다.
+현재 `yak-alimi` 프로젝트 저장소의 `docs/app-ads.txt`만으로는 이 루트 URL을 만들 수 없다.
