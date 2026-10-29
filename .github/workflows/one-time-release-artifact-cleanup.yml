@@ -1,0 +1,54 @@
+name: One-time cleanup of obsolete release artifacts
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-release-artifact-cleanup.yml'
+permissions:
+  contents: read
+  actions: write
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preserve newest releases and remove older duplicates
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const all = await github.paginate(github.rest.actions.listArtifactsForRepo, {owner, repo, per_page: 100});
+            const inScope = all.filter(a => a.name.startsWith("yak-alimi-") && !a.expired);
+            const versionRegex = /^yak-alimi-v(\d+\.\d+\.\d+)-production-and-closedtest-inputs$/;
+            const parsed = inScope.map(a => ({a, version: a.name.match(versionRegex)?.[1] ?? null}));
+            const versions = [...new Set(parsed.map(x => x.version).filter(Boolean))];
+            versions.sort((a,b) => {
+              const x = a.split('.').map(Number), y = b.split('.').map(Number);
+              return (y[0]-x[0]) || (y[1]-x[1]) || (y[2]-x[2]);
+            });
+            const expected = ["3.0.18","3.0.17"];
+            if (JSON.stringify(versions.slice(0,2)) !== JSON.stringify(expected)) {
+              throw new Error('Version safety check failed: discovered ' + JSON.stringify(versions.slice(0,4)) + ', expected ' + JSON.stringify(expected));
+            }
+            const keep = [];
+            for (const version of expected) {
+              const same = parsed.filter(x => x.version === version)
+                .sort((x,y) => Date.parse(y.a.created_at)-Date.parse(x.a.created_at) || y.a.id-x.a.id);
+              if(!same.length) throw new Error('No artifact for required version ' + version);
+              keep.push(same[0].a);
+            }
+            const keepIds = new Set(keep.map(a => a.id));
+            const obsolete = parsed.map(x => x.a).filter(a => !keepIds.has(a.id));
+            core.info('PRESERVING ' + JSON.stringify(keep.map(a => ({id:a.id,name:a.name,size:a.size_in_bytes,created_at:a.created_at}))));
+            core.info('DELETING ' + obsolete.length + ' obsolete artifacts, total bytes ' + obsolete.reduce((s,a)=>s+a.size_in_bytes,0));
+            let deleted = 0;
+            let bytes = 0;
+            for (const artifact of obsolete) {
+              await github.rest.actions.deleteArtifact({owner,repo,artifact_id:artifact.id});
+              deleted++;
+              bytes += artifact.size_in_bytes;
+            }
+            core.summary.addHeading('One-time artifact cleanup')
+              .addRaw('Kept latest two distinct release versions: ' + expected.join(' and ') + '\\n')
+              .addRaw('Deleted ' + deleted + ' older / duplicate artifacts (' + (bytes/1048576).toFixed(1) + ' MiB).');
+            await core.summary.write();
+            core.info('CLEANUP_DONE deleted=' + deleted + ' bytes=' + bytes + ' retained=' + JSON.stringify(keep.map(a=>a.id)));
