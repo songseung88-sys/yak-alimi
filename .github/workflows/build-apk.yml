@@ -2,6 +2,11 @@ name: Build Yak Alimi Android Release
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - v303patch/**
+      - .github/workflows/build-apk.yml
   push:
     branches: [ main ]
     paths:
@@ -50,7 +55,7 @@ jobs:
           sed -i '/import com.google.android.ump.PrivacyOptionsRequirementStatus;/d' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
           sed -i 's/PrivacyOptionsRequirementStatus.REQUIRED/ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED/' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AdsManager.java
 
-      - name: Apply app patches through v3.0.18
+      - name: Apply app patches through v3.0.19
         shell: bash
         run: |
           python v301patch/apply_v301.py
@@ -84,14 +89,17 @@ jobs:
           python v303patch/apply_v317_version.py
           python v303patch/apply_v318_history_action_label.py
           python v303patch/apply_v318_version.py
+          python v303patch/apply_v319_daily_low_stock.py
 
           grep -q 'compileSdk 36' yak_alimi_v21_work/app/build.gradle
           grep -q 'targetSdk 36' yak_alimi_v21_work/app/build.gradle
-          grep -q 'versionCode 62' yak_alimi_v21_work/app/build.gradle
-          grep -q "versionName '3.0.18'" yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionCode 64' yak_alimi_v21_work/app/build.gradle
+          grep -q "versionName '3.0.19'" yak_alimi_v21_work/app/build.gradle
           grep -q 'findDueAt' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
           grep -q 'scheduled_at' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmScheduler.java
           grep -q 'claimGroup' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmReceiver.java
+          grep -q 'ActionReceiver.maybeWarnLowStockAtDose' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/AlarmReceiver.java
+          grep -q 'daily_low_stock_v1' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/ActionReceiver.java
           grep -q 'showDoseGroup' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
           grep -q 'group_screen_title' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/I18n.java
           grep -q 'groupDoseCard' yak_alimi_v21_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
@@ -120,9 +128,9 @@ jobs:
         run: |
           cp -a yak_alimi_v21_work yak_alimi_closedtest_work
           python v303patch/apply_closed_test_premium.py yak_alimi_closedtest_work
-          sed -i 's/versionCode 62/versionCode 63/' yak_alimi_closedtest_work/app/build.gradle
-          grep -q 'versionCode 62' yak_alimi_v21_work/app/build.gradle
-          grep -q 'versionCode 63' yak_alimi_closedtest_work/app/build.gradle
+          sed -i 's/versionCode 64/versionCode 65/' yak_alimi_closedtest_work/app/build.gradle
+          grep -q 'versionCode 64' yak_alimi_v21_work/app/build.gradle
+          grep -q 'versionCode 65' yak_alimi_closedtest_work/app/build.gradle
           grep -q "CLOSED_TEST_PREMIUM = true" yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/BillingManager.java
           grep -q 'showDoseGroup' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/NotificationHelper.java
           grep -q 'groupDoseCard' yak_alimi_closedtest_work/app/src/main/java/com/yakalimi/app/FullScreenAlarmActivity.java
@@ -153,26 +161,26 @@ jobs:
           TEST_APK=$(find yak_alimi_closedtest_work/app/build/outputs/apk/release -maxdepth 1 -type f -name '*unsigned*.apk' | head -1)
           TEST_AAB=$(find yak_alimi_closedtest_work/app/build/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' | head -1)
           test -n "$PROD_APK" && test -n "$PROD_AAB" && test -n "$TEST_APK" && test -n "$TEST_AAB"
-          cp "$PROD_APK" yak-alimi-v3.0.18-production-unsigned.apk
-          cp "$PROD_AAB" yak-alimi-v3.0.18-production-unsigned.aab
-          cp "$TEST_APK" yak-alimi-v3.0.18-closedtest-unsigned.apk
-          cp "$TEST_AAB" yak-alimi-v3.0.18-closedtest-unsigned.aab
+          cp "$PROD_APK" yak-alimi-v3.0.19-production-unsigned.apk
+          cp "$PROD_AAB" yak-alimi-v3.0.19-production-unsigned.aab
+          cp "$TEST_APK" yak-alimi-v3.0.19-closedtest-unsigned.apk
+          cp "$TEST_AAB" yak-alimi-v3.0.19-closedtest-unsigned.aab
           SIGNER=$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)
           test -n "$SIGNER"
           cp "$SIGNER" apksigner.jar
-          unzip -tq yak-alimi-v3.0.18-production-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.18-production-unsigned.aab >/dev/null
-          unzip -tq yak-alimi-v3.0.18-closedtest-unsigned.apk >/dev/null
-          unzip -tq yak-alimi-v3.0.18-closedtest-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.19-production-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.19-production-unsigned.aab >/dev/null
+          unzip -tq yak-alimi-v3.0.19-closedtest-unsigned.apk >/dev/null
+          unzip -tq yak-alimi-v3.0.19-closedtest-unsigned.aab >/dev/null
 
       - name: Upload release inputs
         uses: actions/upload-artifact@v4
         with:
-          name: yak-alimi-v3.0.18-production-and-closedtest-inputs
+          name: yak-alimi-v3.0.19-production-and-closedtest-inputs
           path: |
-            yak-alimi-v3.0.18-production-unsigned.apk
-            yak-alimi-v3.0.18-production-unsigned.aab
-            yak-alimi-v3.0.18-closedtest-unsigned.apk
-            yak-alimi-v3.0.18-closedtest-unsigned.aab
+            yak-alimi-v3.0.19-production-unsigned.apk
+            yak-alimi-v3.0.19-production-unsigned.aab
+            yak-alimi-v3.0.19-closedtest-unsigned.apk
+            yak-alimi-v3.0.19-closedtest-unsigned.aab
             apksigner.jar
           if-no-files-found: error
